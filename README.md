@@ -24,10 +24,11 @@ carrierpigeon should send non-clickable, removable notifications upon login/comp
 Notification Setup:
 
 "Your Windowsill:
+
  -(item) -complete by (due date)
 
  -(item) -complete by (due date)
- 
+
  ... etc"
 
 Windowsill is sorted based on time (earliest date first)
