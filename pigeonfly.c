@@ -11,7 +11,6 @@ Entering a valid message should prompt user to add an optional due date
 
 
 int main(int argc, char **argv)
-// Command Format - pigeonfly (listname) -m (item)
 {
     char *command = argv[2];
     if (argc < 3)

@@ -10,6 +10,7 @@ Functionality:
 #include <stdlib.h>
 
 int all_lists(){
+    /*pieondrop -a - takes no */
 
     FILE *file_ptr;
 
@@ -50,6 +51,10 @@ int main(int argc, char **argv) {
         char* command = argv[2];   
         if (command == "-a") {
             all_lists();
+        }
+        else if (command == "-ws" | command == "windowsill") {
+            due_soon();
+            //FUTURE UPDATE: having settings to make the windowsill set to more than / less than 2 days
         }
     }
     
