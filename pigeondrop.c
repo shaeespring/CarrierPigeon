@@ -24,21 +24,20 @@ int due_soon() {
   */
   time_t t = time(NULL);
   struct tm time = *localtime(&t);
-
   FILE *file_ptr;
-
-  file_ptr = fopen("lists/all_available", "r");
+  char file_lists[] = "lists/all_available.txt";
+  file_ptr = fopen(realpath(file_lists, NULL), "r");
   if (NULL == file_ptr) {
-    printf("file can't be opened \n");
+    printf("file can't be opened \n- Please report error for troubleshooting");
     return EXIT_FAILURE;
   }
 
-  char line[100];
+  char list_path[100];
   char buffer[20];
   char *s = malloc(sizeof(char) * 20);
   int cap = 20;
-  int amtof_lists = 0;
-  int arrayof_lists[100];
+  int idx = 0;
+  char *list_paths[100];
 
   // A no magic number solution for fgets
   while (fgets(buffer, 20, file_ptr)) {
@@ -47,8 +46,8 @@ int due_soon() {
       cap *= 2;
     }
     strcat(s, buffer);
-    arrayof_lists[amtof_lists] = line;
-    amtof_lists += 1;
+    list_paths[idx] = list_path;
+    idx += 1;
   }
   // Closing the file
   fclose(file_ptr);
@@ -60,7 +59,27 @@ int due_soon() {
   }
   return 0;
 }
+char *read_line(FILE *file_ptr) {
 
+  char buffer[20];
+  char *s = malloc(sizeof(char) * 20);
+  int cap = 20;
+
+  while (fgets(buffer, 20, file_ptr)) {
+    if (strlen(s) + strlen(buffer) >= cap) {
+      s = realloc(s, 2 * cap);
+      cap *= 2;
+    }
+
+    strcat(s, buffer);
+
+    if (buffer[strlen(buffer) - 1] == '\n') {
+      break;
+    }
+  }
+
+  return s;
+}
 int all_lists() {
   /*
   pigeondrop -a
@@ -70,26 +89,27 @@ int all_lists() {
 
   FILE *file_ptr;
 
-  file_ptr = fopen("lists/all_available", "r");
+  char file_lists[] = "lists/all_available.txt";
+  file_ptr = fopen(realpath(file_lists, NULL), "r");
   if (NULL == file_ptr) {
     printf("file can't be opened \n");
+    perror("");
     return EXIT_FAILURE;
   }
 
-  char line[100];
   char buffer[20];
   char *s = malloc(sizeof(char) * 20);
   int cap = 20;
 
   // A no magic number solution for fgets
-  while (fgets(buffer, 20, file_ptr)) {
+  while (!feof(file_ptr)) {
     if (strlen(s) + strlen(buffer) >= cap) {
       s = realloc(s, 2 * cap);
       cap *= 2;
     }
     strcat(s, buffer);
 
-    printf("%s\n", line);
+    printf("%s", read_line(file_ptr));
   }
   // Closing the file
   fclose(file_ptr);
@@ -97,7 +117,6 @@ int all_lists() {
 }
 
 int main(int argc, char **argv) {
-
   if (argc < 2) {
     puts("Invalid number of arguments.\nUsage: \n\"pigeondrop -a\" should show "
          "all available lists\n\"pigeondrop (listname)\" should read all items "
@@ -105,10 +124,10 @@ int main(int argc, char **argv) {
          "across all lists due in the next 2 days");
     return 0;
   } else {
-    char *command = argv[2];
-    if (strcmp(command, "-a")) {
+    char *command = argv[1];
+    if (!strcmp(command, "-a")) {
       all_lists();
-    } else if (strcmp(command, "-ws") | strcmp(command, "-windowsill")) {
+    } else if (!strcmp(command, "-ws") | !strcmp(command, "-windowsill")) {
       due_soon();
       // FUTURE UPDATE: having settings to make the windowsill set to more than
       // / less than 2 days
