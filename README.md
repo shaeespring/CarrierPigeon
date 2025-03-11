@@ -5,7 +5,7 @@ Inspired by Trello and the line "Nothing to do!" after running sudo dnf upgrade 
 
 # Functionalies:
 
-- [ ] "pigeonfly (listname) -m (message, enquoted)" to write to a file containing to do lists. Entering a valid message should prompt user to add an optional due date
+- [x] "pigeonfly (listname) -m (message)" to write to a file containing to do lists. Entering a valid message should prompt user to add an optional due date
 - [x] "pigeondrop -a" should show all available lists
 - [ ] "pigeondrop (listname)" should read all items from list
 - [ ] "pigeondrop -ws (or windowsill)" should read all items across all lists due in the next 2 days
