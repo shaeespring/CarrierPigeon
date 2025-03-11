@@ -6,39 +6,44 @@ FUNCTIONALITY:
 do list. Entering a valid message should prompt user to add an optional due date
 */
 
+#include "birdcage.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-// for check_file
-#ifdef WIN32
-#include <io.h>
-#define F_OK 0
-#define access _access
-#endif
-
-int check_file(char *filename) {
-
-  if (access(filename, F_OK) == 0 && access(filename, R_OK) == 0 &&
-      access(filename, W_OK) == 0) {
-    return 1;
-  } else {
-
-    printf("file can't be opened");
-    return 0;
-  }
-}
 
 int appendTask(char *message, char *listname) {
-  FILE *fileptr;
-  FILE *ptrlists;
-  if (check_file("lists/all_available.txt") == 1) {
-    ptrlists = fopen("lists/all_available.txt", "a");
+  char *all = "lists/all_available.txt";
+  FILE *ptrlists = fopen(all, "a");
 
-    return 0;
-  } else {
+  if (ptrlists == NULL) {
+    printf("Failed to open file: %s", all);
     return EXIT_FAILURE;
   }
+
+  char *list = malloc(strlen(listname) + strlen("lists/.txt") + 1);
+  sprintf(list, "lists/%s.txt", listname);
+  FILE *fileptr = fopen(list, "a");
+
+  if (fileptr == NULL) {
+    perror("fopen() failed");
+  }
+  fprintf(fileptr, "%s", message);
+  int contains_list = 0; // listname is not in list
+  char *s = read_line(ptrlists);
+  while (strlen(s) > 1) {
+    if (s == listname) {
+      contains_list = 1; // listname is in list
+      break;
+    }
+    s = read_line(ptrlists);
+  }
+  if (!contains_list) {
+    fprintf(ptrlists, "%s\n", listname);
+  }
+  fclose(ptrlists);
+  fclose(fileptr);
+  return 0;
 }
 
 int main(int argc, char **argv) {
@@ -48,16 +53,13 @@ int main(int argc, char **argv) {
     return 0;
   }
 
-  puts("Will execute sh with the following script :");
   char *listname = argv[1];
-  puts(listname);
 
   if (!strcmp(command, "-m")) {
     char *message = argv[3];
-    appendTask(message, argv[2]);
+    appendTask(message, listname);
   }
 
-  puts("Starting now:");
   //    system(PIGEONFLY);
   return 0;
 }

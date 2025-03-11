@@ -7,11 +7,10 @@ Functionality:
 "pigeondrop -ws (or windowsill)" should read all items across all lists due in
 the next 2 days
 */
+#include "birdcage.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
-
 int due_soon() {
   /*
   pigeondrop -ws or pigeondrop windowsill
@@ -22,8 +21,6 @@ int due_soon() {
   -user customization to hide certain lists from windowsill
   -user customization to choose times of windowsill catch
   */
-  time_t t = time(NULL);
-  struct tm time = *localtime(&t);
   FILE *file_ptr;
   char file_lists[] = "lists/all_available.txt";
   file_ptr = fopen(realpath(file_lists, NULL), "r");
@@ -35,7 +32,7 @@ int due_soon() {
   char list_path[100];
   char buffer[20];
   char *s = malloc(sizeof(char) * 20);
-  int cap = 20;
+  unsigned int cap = 20;
   int idx = 0;
   char *list_paths[100];
 
@@ -59,27 +56,7 @@ int due_soon() {
   }
   return 0;
 }
-char *read_line(FILE *file_ptr) {
 
-  char buffer[20];
-  char *s = malloc(sizeof(char) * 20);
-  int cap = 20;
-
-  while (fgets(buffer, 20, file_ptr)) {
-    if (strlen(s) + strlen(buffer) >= cap) {
-      s = realloc(s, 2 * cap);
-      cap *= 2;
-    }
-
-    strcat(s, buffer);
-
-    if (buffer[strlen(buffer) - 1] == '\n') {
-      break;
-    }
-  }
-
-  return s;
-}
 int all_lists() {
   /*
   pigeondrop -a
@@ -88,7 +65,6 @@ int all_lists() {
   -takes no arguments*/
 
   FILE *file_ptr;
-
   char file_lists[] = "lists/all_available.txt";
   file_ptr = fopen(realpath(file_lists, NULL), "r");
   if (NULL == file_ptr) {
@@ -99,7 +75,7 @@ int all_lists() {
 
   char buffer[20];
   char *s = malloc(sizeof(char) * 20);
-  int cap = 20;
+  unsigned int cap = 20;
 
   // A no magic number solution for fgets
   while (!feof(file_ptr)) {
@@ -115,7 +91,6 @@ int all_lists() {
   fclose(file_ptr);
   return 0;
 }
-
 int main(int argc, char **argv) {
   if (argc < 2) {
     puts("Invalid number of arguments.\nUsage: \n\"pigeondrop -a\" should show "
@@ -129,8 +104,8 @@ int main(int argc, char **argv) {
       all_lists();
     } else if (!strcmp(command, "-ws") | !strcmp(command, "-windowsill")) {
       due_soon();
-      // FUTURE UPDATE: having settings to make the windowsill set to more than
-      // / less than 2 days
+      // TODO: having settings to make the windowsill set to more/less than 2
+      // days
     }
   }
 }
