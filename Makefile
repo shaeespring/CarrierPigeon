@@ -23,3 +23,5 @@ clean:
 	-rm -f pigeondrop.o
 	-rm -f pigeonfly
 	-rm -f pigeondrop
+	-rm -f lists/*
+	-touch lists/all_available.txt
