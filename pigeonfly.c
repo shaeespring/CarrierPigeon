@@ -2,7 +2,7 @@
 PIGEONFLY: Writes todo items to lists
 
 FUNCTIONALITY:
-"pigeonfly (listname) -m (message, enquoted)" to write to a file containing a to
+"pigeonfly (listname) -m (message)" to write to a file containing a to
 do list. Entering a valid message should prompt user to add an optional due date
 */
 
@@ -27,20 +27,11 @@ int appendTask(char *message, char *listname) {
 
   if (fileptr == NULL) {
     perror("fopen() failed");
+    return EXIT_FAILURE;
   }
   fprintf(fileptr, "%s", message);
   fputc('\0', fileptr);
-  int contains_list = 0; // listname is not in list
-  char *s = read_line(ptrlists);
-  while (strlen(s) > 1) {
-    printf("list: |%s|", s);
-    if (!strcmp(s, listname)) {
-      contains_list = 1; // listname is in list
-      break;
-    }
-    s = read_line(ptrlists);
-  }
-  if (!contains_list) {
+  if (!contains_list(listname)) {
     fprintf(ptrlists, "%s", listname);
     fputc('\0', ptrlists);
   }

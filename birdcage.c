@@ -43,27 +43,10 @@ int get_time(void) {
   return 0;
 }
 
-int check_file(char *filename) {
-  if (access(filename, F_OK) != 0) {
-    printf("File %s does not exist", filename);
-    return 0;
-  }
-  if (access(filename, R_OK) != 0) {
-    printf("File %s not readable", filename);
-    return 0;
-  }
-  if (access(filename, W_OK) != 0) {
-    printf("File %s cannot be written to", filename);
-    return 0;
-  } else {
-    return 1;
-  }
-}
-
 // FIXME: NEEDS DOCUMENTATION
 char *read_line(FILE *file_ptr) {
   char buffer[21];
-  char *s = malloc(sizeof(char) * 20);
+  char *s = calloc(20, sizeof(char));
   unsigned int cap = 20;
   size_t len;
   buffer[20] = '\0';
@@ -85,4 +68,20 @@ char *read_line(FILE *file_ptr) {
   }
 
   return s;
+}
+
+int contains_list(char *filename) {
+  char *all = "lists/all_available.txt";
+  FILE *ptrlists = fopen(all, "r");
+  int contains_list = 0; // listname is not in list
+  char *s = read_line(ptrlists);
+  while (strlen(s) > 1) {
+    if (!strcmp(s, filename)) {
+      contains_list = 1; // listname is in list
+      break;
+    }
+  }
+  free(s);
+  fclose(ptrlists);
+  return contains_list;
 }

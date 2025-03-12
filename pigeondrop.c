@@ -25,7 +25,7 @@ int due_soon() {
   char file_lists[] = "lists/all_available.txt";
   file_ptr = fopen(realpath(file_lists, NULL), "r");
   if (NULL == file_ptr) {
-    printf("file can't be opened \n- Please report error for troubleshooting");
+    printf("file can't be opened\n");
     return EXIT_FAILURE;
   }
 
@@ -57,6 +57,26 @@ int due_soon() {
   return 0;
 }
 
+int given_list(char *listname) {
+  char *list = malloc(strlen(listname) + strlen("lists/,txt") + 1);
+  sprintf(list, "lists/%s.txt", listname);
+  FILE *file_ptr = fopen(list, "r");
+
+  if (!contains_list(listname)) {
+    printf("list:%s not available", listname);
+  } else {
+    while (!feof(file_ptr)) {
+      char *line = read_line(file_ptr);
+      if (!strlen(line)) {
+        fclose(file_ptr);
+        break;
+      }
+      printf("%s\n", line);
+    }
+  }
+  return 0;
+}
+
 int all_lists() {
   /*
   pigeondrop -a
@@ -84,6 +104,7 @@ int all_lists() {
   fclose(file_ptr);
   return 0;
 }
+
 int main(int argc, char **argv) {
   if (argc < 2) {
     puts("Invalid number of arguments.\nUsage: \n\"pigeondrop -a\" should show "
@@ -99,6 +120,8 @@ int main(int argc, char **argv) {
       due_soon();
       // TODO: having settings to make the windowsill set to more/less than 2
       // days
+    } else {
+      given_list(command);
     }
   }
 }

@@ -9,6 +9,6 @@
 #define access _access
 #endif
 
-char *check_file(char *file_ptr);
+char *contains_list(char *file_ptr);
 char *read_line(FILE *file_ptr);
 #endif // BIRDCAGE_H
