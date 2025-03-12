@@ -15,7 +15,6 @@ typedef struct date Date;
 typedef struct hour Hour;
 
 struct date {
-
   int day;
   int month;
   int year;
@@ -23,14 +22,15 @@ struct date {
   int minute;
   int second;
 };
+
 int get_time(void) {
 
   Date date;
 
-  char buff[100];
+  char buf[100];
   time_t t = time(0);
   struct tm t_t = *localtime(&t);
-  strftime(buff, 100, "%d-%m-%Y %H:%M:%S", &t_t);
+  strftime(buf, 100, "%d-%m-%Y %H:%M:%S", &t_t);
 
   date.year = t_t.tm_year + 1900; // years since 1900
   date.month = t_t.tm_mon + 1;    // months since January
@@ -62,19 +62,24 @@ int check_file(char *filename) {
 
 // FIXME: NEEDS DOCUMENTATION
 char *read_line(FILE *file_ptr) {
-  char buffer[20];
+  char buffer[21];
   char *s = malloc(sizeof(char) * 20);
   unsigned int cap = 20;
-
-  while (fgets(buffer, 20, file_ptr)) {
+  size_t len;
+  buffer[20] = '\0';
+  while ((len = fread(buffer, sizeof(char), 20, file_ptr))) {
     if (strlen(s) + strlen(buffer) >= cap) {
       s = realloc(s, 2 * cap);
       cap *= 2;
     }
-
     strcat(s, buffer);
 
-    if (buffer[strlen(buffer) - 1] == '\n') {
+    int index = strchr(buffer, '\0') - buffer;
+
+    if (index != 20) {
+      if (fseek(file_ptr, index - len + 1, SEEK_CUR)) {
+        perror("fseek() failed");
+      }
       break;
     }
   }

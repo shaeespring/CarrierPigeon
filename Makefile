@@ -21,3 +21,5 @@ clean:
 	-rm -f birdcage.o
 	-rm -f pigeonfly.o
 	-rm -f pigeondrop.o
+	-rm -f pigeonfly
+	-rm -f pigeondrop

@@ -14,7 +14,7 @@ do list. Entering a valid message should prompt user to add an optional due date
 
 int appendTask(char *message, char *listname) {
   char *all = "lists/all_available.txt";
-  FILE *ptrlists = fopen(all, "a");
+  FILE *ptrlists = fopen(all, "a+");
 
   if (ptrlists == NULL) {
     printf("Failed to open file: %s", all);
@@ -29,17 +29,20 @@ int appendTask(char *message, char *listname) {
     perror("fopen() failed");
   }
   fprintf(fileptr, "%s", message);
+  fputc('\0', fileptr);
   int contains_list = 0; // listname is not in list
   char *s = read_line(ptrlists);
   while (strlen(s) > 1) {
-    if (s == listname) {
+    printf("list: |%s|", s);
+    if (!strcmp(s, listname)) {
       contains_list = 1; // listname is in list
       break;
     }
     s = read_line(ptrlists);
   }
   if (!contains_list) {
-    fprintf(ptrlists, "%s\n", listname);
+    fprintf(ptrlists, "%s", listname);
+    fputc('\0', ptrlists);
   }
   fclose(ptrlists);
   fclose(fileptr);

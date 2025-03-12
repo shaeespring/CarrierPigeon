@@ -68,24 +68,17 @@ int all_lists() {
   char file_lists[] = "lists/all_available.txt";
   file_ptr = fopen(realpath(file_lists, NULL), "r");
   if (NULL == file_ptr) {
-    printf("file can't be opened \n");
-    perror("");
+    perror("file can't be opened");
     return EXIT_FAILURE;
   }
 
-  char buffer[20];
-  char *s = malloc(sizeof(char) * 20);
-  unsigned int cap = 20;
-
   // A no magic number solution for fgets
   while (!feof(file_ptr)) {
-    if (strlen(s) + strlen(buffer) >= cap) {
-      s = realloc(s, 2 * cap);
-      cap *= 2;
+    char *line = read_line(file_ptr);
+    if (!strlen(line)) {
+      break;
     }
-    strcat(s, buffer);
-
-    printf("%s", read_line(file_ptr));
+    printf("%s\n", line);
   }
   // Closing the file
   fclose(file_ptr);
