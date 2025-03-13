@@ -9,6 +9,7 @@ Inspired by Trello and the line "Nothing to do!" after running sudo dnf upgrade 
 - [x] "pigeondrop -a" should show all available lists
 - [x] "pigeondrop (listname)" should read all items from list
 - [ ] "pigeondrop -ws (or windowsill)" should read all items across all lists due in the next 2 days
+- [ ] "shred (listname)" should remove an entire list of tasks with a congratulatory message.
 - [ ] "shred (listname) (task)" should complete an item with a congratulatory message. 
 - [ ] "pigeonpet (listname)" should open a TUI for editing a list with more options all at once (shred, fly, drop, and duedate editing)
 - [ ] "morning" should allow users to view notification settings
