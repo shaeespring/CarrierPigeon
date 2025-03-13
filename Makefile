@@ -8,8 +8,10 @@ pigeondrop: pigeondrop.o birdcage.o
 pigeonfly: pigeonfly.o birdcage.o
 	gcc $(FLAGS) -o pigeonfly birdcage.o pigeonfly.o
 
-shred: shred.o birdcage.o
-	gcc $(FLAGS) -o shred birdcage.o shred.o
+pigeonshred: pigeonshred.o birdcage.o
+	gcc $(FLAGS) -o pigeonshred birdcage.o pigeonshred.o
+
+all: pigeondrop pigeonfly pigeonshred
 
 pigeondrop.o: pigeondrop.c
 	gcc $(FLAGS) -c pigeondrop.c
@@ -20,16 +22,15 @@ pigeonfly.o: pigeonfly.c
 birdcage.o: birdcage.c $(HEADERS)
 	gcc $(FLAGS) -c birdcage.c
 
-shred.o: shred.c
-	gcc $(FLAGS) -c shred.c
+pigeonshred.o: pigeonshred.c
+	gcc $(FLAGS) -c pigeonshred.c
 	
-
 clean:
-	-rm -f shred.o
+	-rm -f pigeonshred.o
 	-rm -f birdcage.o
 	-rm -f pigeonfly.o
 	-rm -f pigeondrop.o
-	-rm -f shred
+	-rm -f pigeonshred
 	-rm -f pigeonfly
 	-rm -f pigeondrop
 

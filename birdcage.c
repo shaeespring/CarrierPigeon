@@ -80,6 +80,7 @@ int contains_list(char *filename) {
       contains_list = 1; // listname is in list
       break;
     }
+    s = read_line(ptrlists);
   }
   free(s);
   fclose(ptrlists);
