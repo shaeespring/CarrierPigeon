@@ -6,11 +6,11 @@ Inspired by Trello and the line "Nothing to do!" after running sudo dnf upgrade 
 # Functionalies:
 
 - [x] "pigeonfly (listname) -m (message)" to write to a file containing to do lists. Entering a valid message should prompt user to add an optional due date
-- [x] "pigeondrop -a" should show all available lists
-- [x] "pigeondrop (listname)" should read all items from list
+- [x] "pigeondrop -a" will show all available lists
+- [x] "pigeondrop (listname)" will read all items from a given list
 - [ ] "pigeondrop -ws (or windowsill)" should read all items across all lists due in the next 2 days
-- [x] "pigeonshred (listname)" should remove an entire list of tasks with a congratulatory message.
-- [ ] "pigeonshred (listname) (task)" should complete an item with a congratulatory message. 
+- [x] "pigeonshred (listname)" will remove an entire list of tasks with a congratulatory message.
+- [x] "pigeonshred (listname) (task)" will complete an item with a congratulatory message. 
 - [ ] "pigeonpet (listname)" should open a TUI for editing a list with more options all at once (shred, fly, drop, and duedate editing)
 - [ ] "morning" should allow users to view notification settings
 
@@ -32,6 +32,14 @@ Notification Setup:
 
 Windowsill is sorted based on time (earliest date first)
 
+# Setup
+
+  To run carrierpigeon:
+  1. clone the repository
+  2. cd into the directory "CarrierPigeon"
+  3a. running the command "make all" to make all relevant object files.
+  3b. optionally running "make (command)" will make the object file for a specific command (pigeonfly, pigeonshred, or pigeondrop)
+  4. to reset any commands run, and to start from new, "make allclean" will reset all object files. This will erase any lists being used.
 
 
 
