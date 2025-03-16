@@ -35,13 +35,42 @@ int pigeonshred(char *listname) {
   }
 }
 
+int taskshred(char *listname, char *task) {
+
+  char *list = malloc(strlen(listname) + strlen("lists/.txt") + 1);
+  sprintf(list, "lists/%s.txt", listname);
+  if (!contains_list(listname)) {
+    printf("list: %s not available\n", listname);
+    return EXIT_FAILURE;
+  } else {
+    FILE *tasks = fopen(list, "r");
+    FILE *new = fopen("list.txt.new", "a");
+    while (!feof(tasks)) {
+      char *line = read_line(tasks);
+      if (strcmp(line, task)) {
+        fprintf(new, "%s", line);
+      }
+    }
+    fclose(new);
+    remove(list);
+    printf("%s completed! Congrats!", task);
+    rename("list.txt.new", list);
+    return 0;
+  }
+}
+
 int main(int argc, char **argv) {
   if (argc < 2) {
     puts("Invalid number of arguments.\nUsage: \n\"shred (listname)\" will "
          "remove the given list");
     return 0;
   } else {
-    char *command = argv[1];
-    pigeonshred(command);
+    char *list = argv[1];
+    if (argc == 3) {
+      char *task = argv[2];
+      taskshred(list, task);
+    } else {
+      pigeonshred(list);
+    }
   }
 }
