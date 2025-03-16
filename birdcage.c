@@ -1,3 +1,8 @@
+/*
+ * A collection of helper functions for use between pigeonfly, pigeondrop, and
+ * pigeonshred
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,13 +12,10 @@
 #include <time.h>
 // for check_file
 #ifdef WIN32
-#include <io.h>
-#define F_OK 0
-#define access _access
 #endif
 typedef struct date Date;
 typedef struct hour Hour;
-
+/*A time stuct for use in pigeondrop -ws*/
 struct date {
   int day;
   int month;
@@ -23,8 +25,11 @@ struct date {
   int second;
 };
 
-int get_time(void) {
-
+int get_time() {
+  /*
+   * A helper function that registers the time given by a user
+   * -Currently deadcode until pigeonfly -ws is working
+   */
   Date date;
 
   char buf[100];
@@ -43,8 +48,10 @@ int get_time(void) {
   return 0;
 }
 
-// FIXME: NEEDS DOCUMENTATION
 char *read_line(FILE *file_ptr) {
+  /*A helper function that returns the next line of a file pointer
+   * Used in all three major command files
+   */
   char buffer[21];
   char *s = calloc(20, sizeof(char));
   unsigned int cap = 20;
@@ -71,6 +78,9 @@ char *read_line(FILE *file_ptr) {
 }
 
 int contains_list(char *filename) {
+  /* A helper function that returns if the given file is a list inside of
+   * all_available.txt used in all three major command files
+   */
   char *all = "lists/all_available.txt";
   FILE *ptrlists = fopen(all, "r");
   int contains_list = 0; // listname is not in list

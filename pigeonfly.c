@@ -13,6 +13,13 @@ do list. Entering a valid message should prompt user to add an optional due date
 #include <unistd.h>
 
 int appendTask(char *message, char *listname) {
+  /*
+   * pigeonfly (listname) -m (message)
+   * FUNCTIONALITY:
+   * -adds a given task to a given list
+   * -will not add the list to the list of all lists if the list already exists
+   *
+   * */
   char *all = "lists/all_available.txt";
   FILE *ptrlists = fopen(all, "a+");
 
@@ -54,6 +61,5 @@ int main(int argc, char **argv) {
     appendTask(message, listname);
   }
 
-  //    system(PIGEONFLY);
   return 0;
 }

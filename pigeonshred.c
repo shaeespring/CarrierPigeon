@@ -11,6 +11,12 @@
 #include <string.h>
 
 int pigeonshred(char *listname) {
+  /*
+   * pigeonshred (listname)
+   * Functionality:
+   * -removes an entire list of tasks
+   * -prints a congratulatory message
+   * -returns an Exit Failure if the list doesn't exist*/
   if (!contains_list(listname)) {
     printf("list: %s not available\n", listname);
     return EXIT_FAILURE;
@@ -36,7 +42,12 @@ int pigeonshred(char *listname) {
 }
 
 int taskshred(char *listname, char *task) {
-
+  /*
+   * pigeonshred (listname) (task)
+   * Functionality:
+   *  -removes a given task from a given list
+   *  -prints a congratulatory message
+   *  -returns an Exit Failure if the list doesn't exist*/
   char *list = malloc(strlen(listname) + strlen("lists/.txt") + 1);
   sprintf(list, "lists/%s.txt", listname);
   if (!contains_list(listname)) {

@@ -2,8 +2,8 @@
 PIGEONDROP: todo list reader
 Functionality:
 
-"pigeondrop -a" should show all available lists
-"pigeondrop (listname)" should read all items from list
+"pigeondrop -a" shows all available lists
+"pigeondrop (listname)" reads all items from the given list
 "pigeondrop -ws (or windowsill)" should read all items across all lists due in
 the next 2 days
 */
@@ -12,6 +12,8 @@ the next 2 days
 #include <stdlib.h>
 #include <string.h>
 int due_soon() {
+  // TODO: currently, this function doesn't read from the time struct, nor does
+  // pigeonfly require it.
   /*
   pigeondrop -ws or pigeondrop windowsill
   Functionality:
@@ -58,12 +60,19 @@ int due_soon() {
 }
 
 int given_list(char *listname) {
+  /*
+   * pigeondrop (listname)
+   * Functionality:
+   * -Shows the tasks in the given list
+   * -Throws an exit failure if the given list hasn't been created yet
+   * */
   char *list = malloc(strlen(listname) + strlen("lists/,txt") + 1);
   sprintf(list, "lists/%s.txt", listname);
   FILE *file_ptr = fopen(list, "r");
 
   if (!contains_list(listname)) {
     printf("list:%s not available", listname);
+    return EXIT_FAILURE;
   } else {
     while (!feof(file_ptr)) {
       char *line = read_line(file_ptr);
@@ -81,7 +90,7 @@ int all_lists() {
   /*
   pigeondrop -a
   Functionality:
-  -should show all available lists
+  -Shows all available lists
   -takes no arguments*/
 
   FILE *file_ptr;
@@ -100,7 +109,6 @@ int all_lists() {
     }
     printf("%s\n", line);
   }
-  // Closing the file
   fclose(file_ptr);
   return 0;
 }
