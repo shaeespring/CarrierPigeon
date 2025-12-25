@@ -25,9 +25,9 @@ struct date {
   int second;
 };
 
-int get_time() {
+Date get_sys_time() {
   /*
-   * A helper function that registers the time given by a user
+   * A helper function that registers the system time when inquired by a user
    * -Currently deadcode until pigeonfly -ws is working
    */
   Date date;
@@ -45,7 +45,7 @@ int get_time() {
   date.minute = t_t.tm_min;
   date.second = t_t.tm_sec;
 
-  return 0;
+  return date;
 }
 
 char *read_line(FILE *file_ptr) {

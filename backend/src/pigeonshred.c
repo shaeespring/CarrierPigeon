@@ -22,7 +22,7 @@ int pigeonshred(char *listname) {
     return EXIT_FAILURE;
   } else {
     FILE *all = fopen("lists/all_available.txt", "r");
-    FILE *new = fopen("all_available.txt.new", "a");
+    FILE *new = fopen("all_available.txt.new", "w");
     while (!feof(all)) {
       char *line = read_line(all);
       if (strcmp(line, listname)) {
@@ -55,7 +55,7 @@ int taskshred(char *listname, char *task) {
     return EXIT_FAILURE;
   } else {
     FILE *tasks = fopen(list, "r");
-    FILE *new = fopen("list.txt.new", "a");
+    FILE *new = fopen("list.txt.new", "w");
     while (!feof(tasks)) {
       char *line = read_line(tasks);
       if (strcmp(line, task)) {

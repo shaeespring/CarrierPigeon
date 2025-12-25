@@ -11,9 +11,9 @@ the next 2 days
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 int due_soon() {
-  // TODO: currently, this function doesn't read from the time struct, nor does
-  // pigeonfly require it.
+
   /*
   pigeondrop -ws or pigeondrop windowsill
   Functionality:
@@ -23,6 +23,10 @@ int due_soon() {
   -user customization to hide certain lists from windowsill
   -user customization to choose times of windowsill catch
   */
+
+  Date *time = get_sys_time();
+  // Get the string of local time
+  printf("Items due by %d/%d/%d\n", time->month, time->day + 2, time->year);
   FILE *file_ptr;
   char file_lists[] = "lists/all_available.txt";
   file_ptr = fopen(realpath(file_lists, NULL), "r");
@@ -54,6 +58,8 @@ int due_soon() {
 
   for (i = 0; i < 100; i++) {
 
+    char file_lists[] = "lists/all_available.txt";
+    file_ptr = fopen(realpath(file_lists, NULL), "r");
     // open each list and read things due in 2 days
   }
   return 0;
