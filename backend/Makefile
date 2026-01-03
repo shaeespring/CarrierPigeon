@@ -1,42 +1,42 @@
 
-HEADERS = birdcage.h
-FLAGS = -Wall -Wextra --pedantic -ggdb
+HEADERS = include/birdcage.h
+FLAGS = -Wall -Wextra --pedantic -ggdb -Iinclude
 
-pigeondrop: pigeondrop.o birdcage.o
-	gcc $(FLAGS) -o pigeondrop birdcage.o pigeondrop.o
+mkdir:
+	mkdir -p obj
 
-pigeonfly: pigeonfly.o birdcage.o
-	gcc $(FLAGS) -o pigeonfly birdcage.o pigeonfly.o
+pigeondrop: mkdir pigeondrop.o birdcage.o
+	gcc $(FLAGS) -o pigeondrop obj/birdcage.o obj/pigeondrop.o
 
-pigeonshred: pigeonshred.o birdcage.o
-	gcc $(FLAGS) -o pigeonshred birdcage.o pigeonshred.o
+pigeonfly: mkdir pigeonfly.o birdcage.o
+	gcc $(FLAGS) -o pigeonfly obj/birdcage.o obj/pigeonfly.o
+
+pigeonshred: mkdir pigeonshred.o birdcage.o
+	gcc $(FLAGS) -o pigeonshred obj/birdcage.o obj/pigeonshred.o
 
 all: pigeondrop pigeonfly pigeonshred
 
-pigeondrop.o: pigeondrop.c
-	gcc $(FLAGS) -c pigeondrop.c
+pigeondrop.o: mkdir src/pigeondrop.c
+	gcc $(FLAGS) -c src/pigeondrop.c -o obj/pigeondrop.o
 
-pigeonfly.o: pigeonfly.c
-	gcc $(FLAGS) -c pigeonfly.c
+pigeonfly.o: mkdir src/pigeonfly.c
+	gcc $(FLAGS) -c src/pigeonfly.c -o obj/pigeonfly.o
 
-birdcage.o: birdcage.c $(HEADERS)
-	gcc $(FLAGS) -c birdcage.c
+birdcage.o: mkdir src/birdcage.c $(HEADERS)
+	gcc $(FLAGS) -c src/birdcage.c -o obj/birdcage.o
 
-pigeonshred.o: pigeonshred.c
-	gcc $(FLAGS) -c pigeonshred.c
+pigeonshred.o: mkdir src/pigeonshred.c
+	gcc $(FLAGS) -c src/pigeonshred.c -o obj/pigeonshred.o
 	
 clean:
-	-rm -f pigeonshred.o
-	-rm -f birdcage.o
-	-rm -f pigeonfly.o
-	-rm -f pigeondrop.o
 	-rm -f pigeonshred
 	-rm -f pigeonfly
 	-rm -f pigeondrop
+	-rm -rf obj
 
 listclean:
-	-rm -f lists/*
-	-touch lists/all_available.txt
+	-rm -f ../lists/*
+	-touch ../lists/all_available.txt
 
 allclean: clean listclean
 		

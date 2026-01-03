@@ -8,6 +8,7 @@ Inspired by Trello and the line "Nothing to do!" after running sudo dnf upgrade 
 
 - [ ] Create simple locally run webpage with navigation to lists
 - [ ] Create Dockerfile to build and run everything with a simple command
+- [ ] Run CLI with a simple command
 
 # CLI Setup
 
