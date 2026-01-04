@@ -3,6 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+
+#define LISTS_AVAILABLE "../lists/all_available.txt"
+#define LISTS_DIR "../lists/"
 typedef struct date Date;
 typedef struct hour Hour;
 
@@ -20,6 +23,6 @@ struct date {
 #define access _access
 #endif
 Date *get_sys_time();
-char *contains_list(char *file_ptr);
+int contains_list(char *file_ptr);
 char *read_line(FILE *file_ptr);
 #endif // BIRDCAGE_H

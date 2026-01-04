@@ -28,8 +28,7 @@ int due_soon() {
   // Get the string of local time
   printf("Items due by %d/%d/%d\n", time->month, time->day + 2, time->year);
   FILE *file_ptr;
-  char file_lists[] = "lists/all_available.txt";
-  file_ptr = fopen(realpath(file_lists, NULL), "r");
+  file_ptr = fopen(realpath(LISTS_AVAILABLE, NULL), "r");
   if (NULL == file_ptr) {
     printf("file can't be opened\n");
     return EXIT_FAILURE;
@@ -52,14 +51,14 @@ int due_soon() {
     list_paths[idx] = list_path;
     idx += 1;
   }
+
   // Closing the file
   fclose(file_ptr);
   int i;
 
   for (i = 0; i < 100; i++) {
 
-    char file_lists[] = "lists/all_available.txt";
-    file_ptr = fopen(realpath(file_lists, NULL), "r");
+    file_ptr = fopen(realpath(LISTS_AVAILABLE, NULL), "r");
     // open each list and read things due in 2 days
   }
   return 0;
@@ -72,8 +71,8 @@ int given_list(char *listname) {
    * -Shows the tasks in the given list
    * -Throws an exit failure if the given list hasn't been created yet
    * */
-  char *list = malloc(strlen(listname) + strlen("lists/,txt") + 1);
-  sprintf(list, "lists/%s.txt", listname);
+  char *list = malloc(strlen(listname) + strlen(LISTS_DIR)+ strlen(".txt") + 1);
+  sprintf(list, strcat(LISTS_DIR,"%s.txt"), listname);
   FILE *file_ptr = fopen(list, "r");
 
   if (!contains_list(listname)) {
@@ -100,8 +99,7 @@ int all_lists() {
   -takes no arguments*/
 
   FILE *file_ptr;
-  char file_lists[] = "lists/all_available.txt";
-  file_ptr = fopen(realpath(file_lists, NULL), "r");
+  file_ptr = fopen(realpath(LISTS_AVAILABLE, NULL), "r");
   if (NULL == file_ptr) {
     perror("file can't be opened");
     return EXIT_FAILURE;
@@ -121,8 +119,10 @@ int all_lists() {
 
 int main(int argc, char **argv) {
   if (argc < 2) {
-    puts("Invalid number of arguments.\nUsage: \n\"pigeondrop -a\" should show "
-         "all available lists\n\"pigeondrop (listname)\" should read all items "
+    puts("Invalid number of arguments.\nUsage: \n\"pigeondrop -a\" should "
+         "show "
+         "all available lists\n\"pigeondrop (listname)\" should read all "
+         "items "
          "from list\n\"pigeondrop -ws (or windowsill)\" should read all items "
          "across all lists due in the next 2 days");
     return 0;

@@ -8,11 +8,12 @@ Inspired by Trello and the line "Nothing to do!" after running sudo dnf upgrade 
 
 - [ ] Create simple locally run webpage with navigation to lists
 - [ ] Create Dockerfile to build and run everything with a simple command
-- [ ] Run CLI with a simple command
+- [x] Run CLI with a simple command
 
 # CLI Setup
 
--
+- Build your Docker image with `docker build -t <image-name> .` inside the directory of Carrier Pigeon
+- Run your image with `docker run -i <image-name>`
 
 # Web-based Setup
 

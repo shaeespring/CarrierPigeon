@@ -20,16 +20,16 @@ int appendTask(char *message, char *listname) {
    * -will not add the list to the list of all lists if the list already exists
    *
    * */
-  char *all = "lists/all_available.txt";
-  FILE *ptrlists = fopen(all, "a+");
+  FILE *ptrlists = fopen(LISTS_AVAILABLE, "a+");
 
   if (ptrlists == NULL) {
-    printf("Failed to open file: %s", all);
+    printf("Failed to open file: %s", LISTS_AVAILABLE);
     return EXIT_FAILURE;
   }
 
-  char *list = malloc(strlen(listname) + strlen("lists/.txt") + 1);
-  sprintf(list, "lists/%s.txt", listname);
+  char *list =
+      malloc(strlen(listname) + strlen(LISTS_DIR) + strlen(".txt") + 1);
+  sprintf(list, strcat(LISTS_DIR, "%s.txt"), listname);
   FILE *fileptr = fopen(list, "a");
 
   if (fileptr == NULL) {

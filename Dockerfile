@@ -1,14 +1,18 @@
 FROM ubuntu:24.04
 
-COPY backend .
+WORKDIR /app
+
+COPY backend backend
+COPY lists lists
 
 RUN apt-get update
-RUN apt-get install build-essential
+RUN apt-get install -y build-essential
+RUN apt-get install -y make
 
-WORKDIR ./backend/
+WORKDIR /app/backend
 
 RUN make all
 
-WORKDIR ./
+WORKDIR /app
 
-CMD ["sh"]
+ENV PATH="/app/backend:$PATH"

@@ -3,47 +3,35 @@
  * pigeonshred
  */
 
+#include "birdcage.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#include <unistd.h>
-
 #include <time.h>
+#include <unistd.h>
 // for check_file
 #ifdef WIN32
 #endif
-typedef struct date Date;
-typedef struct hour Hour;
-/*A time stuct for use in pigeondrop -ws*/
-struct date {
-  int day;
-  int month;
-  int year;
-  int hour;
-  int minute;
-  int second;
-};
 
-Date get_sys_time() {
+Date *get_sys_time() {
   /*
    * A helper function that registers the system time when inquired by a user
    * -Currently deadcode until pigeonfly -ws is working
    */
-  Date date;
+  Date *date;
 
   char buf[100];
   time_t t = time(0);
   struct tm t_t = *localtime(&t);
   strftime(buf, 100, "%d-%m-%Y %H:%M:%S", &t_t);
 
-  date.year = t_t.tm_year + 1900; // years since 1900
-  date.month = t_t.tm_mon + 1;    // months since January
-  date.day = t_t.tm_mday;         // day of month
+  date->year = t_t.tm_year + 1900; // years since 1900
+  date->month = t_t.tm_mon + 1;    // months since January
+  date->day = t_t.tm_mday;         // day of month
 
-  date.hour = t_t.tm_hour;
-  date.minute = t_t.tm_min;
-  date.second = t_t.tm_sec;
+  date->hour = t_t.tm_hour;
+  date->minute = t_t.tm_min;
+  date->second = t_t.tm_sec;
 
   return date;
 }
@@ -81,8 +69,7 @@ int contains_list(char *filename) {
   /* A helper function that returns if the given file is a list inside of
    * all_available.txt used in all three major command files
    */
-  char *all = "lists/all_available.txt";
-  FILE *ptrlists = fopen(all, "r");
+  FILE *ptrlists = fopen(LISTS_AVAILABLE, "r");
   int contains_list = 0; // listname is not in list
   char *s = read_line(ptrlists);
   while (strlen(s) > 1) {
