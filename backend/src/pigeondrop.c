@@ -71,8 +71,9 @@ int given_list(char *listname) {
    * -Shows the tasks in the given list
    * -Throws an exit failure if the given list hasn't been created yet
    * */
-  char *list = malloc(strlen(listname) + strlen(LISTS_DIR)+ strlen(".txt") + 1);
-  sprintf(list, strcat(LISTS_DIR,"%s.txt"), listname);
+  char *list =
+      malloc(strlen(listname) + strlen(LISTS_DIR) + strlen(".txt") + 1);
+  sprintf(list, LISTS_DIR "%s.txt", listname);
   FILE *file_ptr = fopen(list, "r");
 
   if (!contains_list(listname)) {

@@ -29,7 +29,7 @@ int appendTask(char *message, char *listname) {
 
   char *list =
       malloc(strlen(listname) + strlen(LISTS_DIR) + strlen(".txt") + 1);
-  sprintf(list, strcat(LISTS_DIR, "%s.txt"), listname);
+  sprintf(list, LISTS_DIR "%s.txt", listname);
   FILE *fileptr = fopen(list, "a");
 
   if (fileptr == NULL) {
@@ -50,7 +50,7 @@ int appendTask(char *message, char *listname) {
 int main(int argc, char **argv) {
   char *command = argv[2];
   if (argc < 3) {
-    puts("Invalid number of arguments.\nUsage: pigeonfly (listname) (item)");
+    puts("Invalid number of arguments.\nUsage: pigeonfly (listname) -m (item)");
     return 0;
   }
 

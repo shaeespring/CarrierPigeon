@@ -34,7 +34,7 @@ int pigeonshred(char *listname) {
     remove(LISTS_AVAILABLE);
     char *list =
         malloc(strlen(listname) + strlen(LISTS_DIR) + strlen(".txt") + 1);
-    sprintf(list, strcat(LISTS_DIR, "%s.txt"), listname);
+    sprintf(list, LISTS_DIR"%s.txt", listname);
     remove(list);
     printf("%s completed! Congrats!", list);
     rename("all_available.txt.new", LISTS_AVAILABLE);
@@ -51,7 +51,7 @@ int taskshred(char *listname, char *task) {
    *  -returns an Exit Failure if the list doesn't exist*/
   char *list =
       malloc(strlen(listname) + strlen(LISTS_DIR) + strlen(".txt") + 1);
-  sprintf(list, strcat(LISTS_DIR, "%s.txt"), listname);
+  sprintf(list, LISTS_DIR"%s.txt", listname);
   if (!contains_list(listname)) {
     printf("list: %s not available\n", listname);
     return EXIT_FAILURE;
