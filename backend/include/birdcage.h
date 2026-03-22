@@ -25,4 +25,6 @@ struct date {
 Date *get_sys_time();
 int contains_list(char *file_ptr);
 char *read_line(FILE *file_ptr);
+FILE *redirect_to_file();
+void print_output_to_stdout();
 #endif // BIRDCAGE_H
