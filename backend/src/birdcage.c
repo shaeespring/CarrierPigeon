@@ -13,8 +13,6 @@
 #ifdef WIN32
 #endif
 
-#define OUTPUT_FILE "output.txt"
-
 Date *get_sys_time() {
   /*
    * A helper function that registers the system time when inquired by a user
@@ -84,26 +82,4 @@ int contains_list(char *filename) {
   free(s);
   fclose(ptrlists);
   return contains_list;
-}
-
-FILE *redirect_to_file() {
-  FILE *file_ptr = fopen(OUTPUT_FILE, "w");
-  if (NULL == file_ptr) {
-    perror("Failed to create output file for pigeondrop");
-    return NULL;
-  }
-  return file_ptr;
-}
-
-void print_output_to_stdout() {
-  FILE *file_ptr = fopen(OUTPUT_FILE, "r");
-  if (NULL == file_ptr) {
-    perror("Cannot read output file for pigeondrop");
-    return;
-  }
-  char buffer[1024]; // TEN TWENTY FOUR!!!
-  while (fgets(buffer, sizeof(buffer), file_ptr)) {
-    fclose(file_ptr);
-  }
-  remove(OUTPUT_FILE);
 }

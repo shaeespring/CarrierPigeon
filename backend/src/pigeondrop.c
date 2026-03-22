@@ -13,7 +13,7 @@ the next 2 days
 #include <string.h>
 #include <time.h>
 
-int due_soon() {
+int due_soon(FILE *output) {
 
   /*
   pigeondrop -ws or pigeondrop windowsill
@@ -25,10 +25,6 @@ int due_soon() {
   -user customization to choose times of windowsill catch
   */
 
-  FILE *output = redirect_to_file();
-  if (NULL == output) {
-    return EXIT_FAILURE;
-  }
   Date *time = get_sys_time();
   // Get the string of local time
   fprintf(output, "Items due by %d/%d/%d\n", time->month, time->day + 2,
@@ -37,7 +33,6 @@ int due_soon() {
   file_ptr = fopen(realpath(LISTS_AVAILABLE, NULL), "r");
   if (NULL == file_ptr) {
     perror("file can't be opened\n");
-    fclose(output);
     return EXIT_FAILURE;
   }
 
@@ -68,21 +63,16 @@ int due_soon() {
     file_ptr = fopen(realpath(LISTS_AVAILABLE, NULL), "r");
     // open each list and read things due in 2 days
   }
-  fclose(output);
   return 0;
 }
 
-int given_list(char *listname) {
+int given_list(FILE *output, char *listname) {
   /*
    * pigeondrop (listname)
    * Functionality:
    * -Shows the tasks in the given list
    * -Throws an exit failure if the given list hasn't been created yet
    * */
-  FILE *output = redirect_to_file();
-  if (NULL == output) {
-    return EXIT_FAILURE;
-  }
   char *list =
       malloc(strlen(listname) + strlen(LISTS_DIR) + strlen(".txt") + 1);
   sprintf(list, LISTS_DIR "%s.txt", listname);
@@ -90,7 +80,6 @@ int given_list(char *listname) {
 
   if (!contains_list(listname)) {
     fprintf(output, "list:%s not available", listname);
-    fclose(output);
     return EXIT_FAILURE;
   } else {
     while (!feof(file_ptr)) {
@@ -102,27 +91,20 @@ int given_list(char *listname) {
       fprintf(output, "%s\n", line);
     }
   }
-  fclose(output);
   return 0;
 }
 
-int all_lists() {
+int all_lists(FILE *output) {
   /*
   pigeondrop -a
   Functionality:
   -Shows all available lists
   -takes no arguments*/
 
-  FILE *output = redirect_to_file();
-  if (NULL == output) {
-    return EXIT_FAILURE;
-  }
-
   FILE *file_ptr;
   file_ptr = fopen(realpath(LISTS_AVAILABLE, NULL), "r");
   if (NULL == file_ptr) {
     perror("file can't be opened");
-    fclose(output);
     return EXIT_FAILURE;
   }
 
@@ -135,7 +117,6 @@ int all_lists() {
     fprintf(output, "%s\n", line);
   }
   fclose(file_ptr);
-  fclose(output);
   return 0;
 }
 
@@ -152,17 +133,13 @@ int main(int argc, char **argv) {
   } else {
     char *command = argv[1];
     if (!strcmp(command, "-a")) {
-      result = all_lists();
+      result = all_lists(stdout);
     } else if (!strcmp(command, "-ws") | !strcmp(command, "-windowsill")) {
-      result = due_soon();
+      result = due_soon(stdout);
       // TODO: having settings to make the windowsill set to more/less than 2
       // days
     } else {
-      result = given_list(command);
-    }
-
-    if (result == 0) {
-      print_output_to_stdout();
+      result = given_list(stdout, command);
     }
   }
 }

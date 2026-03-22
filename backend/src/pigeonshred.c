@@ -10,7 +10,7 @@
 #include "birdcage.h"
 #include <string.h>
 
-int pigeonshred(char *listname) {
+int pigeonshred(FILE *output, char *listname) {
   /*
    * pigeonshred (listname)
    * Functionality:
@@ -18,7 +18,7 @@ int pigeonshred(char *listname) {
    * -prints a congratulatory message
    * -returns an Exit Failure if the list doesn't exist*/
   if (!contains_list(listname)) {
-    printf("list: %s not available\n", listname);
+    fprintf(output, "list: %s not available\n", listname);
     return EXIT_FAILURE;
   } else {
     FILE *all = fopen(LISTS_AVAILABLE, "r");
@@ -34,15 +34,15 @@ int pigeonshred(char *listname) {
     remove(LISTS_AVAILABLE);
     char *list =
         malloc(strlen(listname) + strlen(LISTS_DIR) + strlen(".txt") + 1);
-    sprintf(list, LISTS_DIR"%s.txt", listname);
+    sprintf(list, LISTS_DIR "%s.txt", listname);
     remove(list);
-    printf("%s completed! Congrats!", list);
+    fprintf(output, "%s completed! Congrats!", list);
     rename("all_available.txt.new", LISTS_AVAILABLE);
     return 0;
   }
 }
 
-int taskshred(char *listname, char *task) {
+int taskshred(FILE *output, char *listname, char *task) {
   /*
    * pigeonshred (listname) (task)
    * Functionality:
@@ -51,9 +51,9 @@ int taskshred(char *listname, char *task) {
    *  -returns an Exit Failure if the list doesn't exist*/
   char *list =
       malloc(strlen(listname) + strlen(LISTS_DIR) + strlen(".txt") + 1);
-  sprintf(list, LISTS_DIR"%s.txt", listname);
+  sprintf(list, LISTS_DIR "%s.txt", listname);
   if (!contains_list(listname)) {
-    printf("list: %s not available\n", listname);
+    fprintf(output, "list: %s not available\n", listname);
     return EXIT_FAILURE;
   } else {
     FILE *tasks = fopen(list, "r");
@@ -66,7 +66,7 @@ int taskshred(char *listname, char *task) {
     }
     fclose(new);
     remove(list);
-    printf("%s completed! Congrats!", task);
+    fprintf(output, "%s completed! Congrats!", task);
     rename("list.txt.new", list);
     return 0;
   }
@@ -81,9 +81,9 @@ int main(int argc, char **argv) {
     char *list = argv[1];
     if (argc == 3) {
       char *task = argv[2];
-      taskshred(list, task);
+      taskshred(stdout, list, task);
     } else {
-      pigeonshred(list);
+      pigeonshred(stdout, list);
     }
   }
 }

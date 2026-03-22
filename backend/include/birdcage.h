@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#define LISTS_AVAILABLE "lists/all_available.txt"
-#define LISTS_DIR "lists/"
+#define LISTS_AVAILABLE "../lists/all_available.txt"
+#define LISTS_DIR "../lists/"
 typedef struct date Date;
 typedef struct hour Hour;
 
