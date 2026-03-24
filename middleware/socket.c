@@ -12,6 +12,7 @@
 #define PORT 3666
 #define BUFFERSIZE 1024 // TEN-TWENTY FOURRRR
 
+#ifdef WEBSERVER
 extern int all_lists(FILE *);
 
 int main(int port) {
@@ -105,7 +106,7 @@ int main(int port) {
                         "Server: webserver-c\r\n"
                         "Content-type: text/html\r\n\r\n";
 
-        int valwrite = write(newsockfd, header, sizeof(header));
+        int valwrite = write(newsockfd, header, strlen(header));
         if (valwrite < 0) {
           perror("webserver write failed");
           break;
@@ -132,8 +133,8 @@ int main(int port) {
           char *resp = "HTTP/1.0 500 INTERNAL SERVER ERROR\r\n"
                        "Server: webserver-c\r\n"
                        "Content-type: application/json\r\n\r\n"
-                        "{\"error\": \"Temporary file unable to build\"}\r\n";
-                        
+                       "{\"error\": \"Temporary file unable to build\"}\r\n";
+
           int valwrite = write(newsockfd, resp, strlen(resp));
           if (valwrite < 0) {
             perror("webserver write failed");
@@ -144,8 +145,8 @@ int main(int port) {
         int res = all_lists(temp);
         printf("lists returned: %d\n", res);
         long file_pos = ftell(temp);
-        printf("File Pos: %ld\n",file_pos);
-        if (file_pos == 0){
+        printf("File Pos: %ld\n", file_pos);
+        if (file_pos == 0) {
           printf("all_lists has 0 lists");
         }
 
@@ -155,7 +156,7 @@ int main(int port) {
           char *resp = "HTTP/1.0 404 NOT FOUND\r\n"
                        "Server: webserver-c\r\n"
                        "Content-type: application/json\r\n\r\n"
-                        "{\"error\": Lists not found\"}\r\n";
+                       "{\"error\": Lists not found\"}\r\n";
           int valwrite = write(newsockfd, resp, strlen(resp));
           if (valwrite < 0) {
             perror("webserver write failed");
@@ -167,24 +168,46 @@ int main(int port) {
         rewind(temp);
         char header[] = "HTTP/1.0 200 OK\r\n"
                         "Server: webserver-c\r\n"
-                       "Content-type: application/json\r\n\r\n";
+                        "Content-type: application/json\r\n\r\n";
 
-        int valwrite = write(newsockfd, header, sizeof(header));
+        int valwrite = write(newsockfd, header, strlen(header));
         if (valwrite < 0) {
           perror("webserver write failed");
           break;
         }
-        char file_buffer[1024];
-        size_t bytes_read;
-        while ((bytes_read = fread(file_buffer, 1, sizeof(file_buffer), temp)) >
-               0) {
+        char open_bracket = '[';
+        write(newsockfd, &open_bracket, 1);
+        char line[256];
+        int first_item = 1;
+        while (fgets(line, sizeof(line), temp) != NULL) {
 
-          int valwrite = write(newsockfd, file_buffer, bytes_read);
-          if (valwrite < 0) {
-            perror("webserver write failed");
-            break;
+          size_t line_length = strlen(line);
+          if (line_length > 0 && line[line_length - 1] == '\n') {
+            line[line_length - 1] = '\0';
+            line_length--;
+          }
+
+          if (strlen(line) > 0) {
+            if (!first_item) {
+              write(newsockfd, ",", 1);
+            }
+            first_item = 0;
+
+            write(newsockfd, "\"", 1);
+
+            for (int i = 0; line[i] != '\0'; i++) {
+              write(newsockfd, &line[i], 1);
+            }
+            write(newsockfd, "\"", 1);
           }
         }
+
+        valwrite = write(newsockfd, "]", 1);
+        if (valwrite < 0) {
+          perror("webserver write failed");
+          break;
+        }
+
         fclose(temp);
         close(newsockfd);
         continue;
