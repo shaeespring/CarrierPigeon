@@ -11,13 +11,17 @@ Inspired by Trello and the line "Nothing to do!" after running sudo dnf upgrade 
 - [x] Run CLI with a simple command
 
 # CLI Setup
-
-- Build your Docker image with `docker build -t <image-name> .` inside the directory of Carrier Pigeon
-- Run your image with `docker run -i <image-name>`
+  DEV
+  1. in the top level folder, make all or make backend
+  2. cd into backend
+  3. Run commands such as pigeonfly <listname> -m <task>
 
 # Web-based Setup
 
-- 
+- in the top level folder, make all 
+- Only pigeondrop is implemented, so before you begin, cd into backend and run pigeonfly <listname> -m <task>
+- From the toplevel folder, run ./middleware/socket 
+- navigate to http://localhost:3666/index.html
 
 # Notifications (Future Implementation):
 
