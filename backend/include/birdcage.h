@@ -4,8 +4,16 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#ifndef WEBSERVER
 #define LISTS_AVAILABLE "../lists/all_available.txt"
 #define LISTS_DIR "../lists/"
+#endif
+#ifdef WEBSERVER
+#define LISTS_AVAILABLE "./lists/all_available.txt"
+#define LISTS_DIR "./lists/"
+#endif
+
+
 typedef struct date Date;
 typedef struct hour Hour;
 

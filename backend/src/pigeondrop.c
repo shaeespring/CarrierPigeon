@@ -94,7 +94,7 @@ int given_list(FILE *output, char *listname) {
   return 0;
 }
 
-int all_lists(FILE *output) {
+extern int all_lists(FILE *output) {
   /*
   pigeondrop -a
   Functionality:
@@ -120,6 +120,7 @@ int all_lists(FILE *output) {
   return 0;
 }
 
+#ifndef WEBSERVER
 int main(int argc, char **argv) {
   int result;
   if (argc < 2) {
@@ -143,3 +144,4 @@ int main(int argc, char **argv) {
     }
   }
 }
+#endif

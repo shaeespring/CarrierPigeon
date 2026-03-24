@@ -1,16 +1,15 @@
 <!DOCTYPE html>
-<html>
-<title>Choose To Do List</title>
+<title>Todo List</title>
 <body>
 <div class="container">
-    <h1>To Do Lists</h1>
-    <button id="fetchBtn">Request folders from replaceme.c</button>
+    <h1>items</h1>
+    <button id="fetchBtn">Request items from replaceme.c</button>
     <div class="status" id="status">Ready</div>
-    <div class="folders" id="folders"></div>
+    <div class="items" id="items"></div>
 </div>
 
 <script>
-    const foldersDiv = document.getElementById('folders');
+    const itemsDiv = document.getElementById('items');
     const statusDiv = document.getElementById('status');
     const fetchBtn = document.getElementById('fetchBtn');
 
@@ -19,38 +18,38 @@
         statusDiv.textContent = msg;
     }
 
-    // clickable folders from array
-    function renderfolders(arr) {
-        foldersDiv.innerHTML = '';
+    // Create clickable items from array
+    function renderitems(arr) {
+        itemsDiv.innerHTML = '';
         
         if (!arr || arr.length === 0) {
-            foldersDiv.innerHTML = '<div class="empty">Nothing to do!</div>';
+            itemsDiv.innerHTML = '<div class="empty">Nothing to do!</div>';
             return;
         }
         
         for (let i = 0; i < arr.length; i++) {
             const item = arr[i];
-            const folder = document.createElement('div');
-            folder.className = 'folder';
+            const items = document.createElement('div');
+            item.className = 'item';
+            // Display item nicely
             let displayText = typeof item === 'object' ? JSON.stringify(item) : String(item);
-            folder.textContent = displayText;
+            if (displayText.length > 40) displayText = displayText.slice(0, 37) + '...';
+            item.textContent = displayText;
             
             // Click handler
-            folder.onclick = () => {
+            item.onclick = () => {
                 alert(`You clicked: ${JSON.stringify(item, null, 2)}`);
                 console.log('Clicked:', item, 'at index', i);
-                const path = encodeURIComponent(folderPath);
-                window.location.href-`list.html?folder=${path}`
             };
             
-            foldersDiv.appendChild(folder);
+            itemsDiv.appendChild(item);
         }
     }
 
     // Fetch the array from replaceme.c
     async function fetchArray() {
         try {
-            const response = await fetch('lists');
+            const response = await fetch('replaceme.c');
             
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}`);
@@ -62,11 +61,11 @@
                 throw new Error('Response is not an array');
             }
             
-            renderfolders(data);
+            renderitems(data);
             
         } catch (err) {
             setStatus(`Error: ${err.message}`, true);
-            foldersDiv.innerHTML = `<div class="empty">Failed to load. Make sure replaceme.c returns a JSON array.</div>`;
+            itemsDiv.innerHTML = `<div class="empty">Failed to load. Make sure replaceme.c returns a JSON array.</div>`;
         }
     }
 

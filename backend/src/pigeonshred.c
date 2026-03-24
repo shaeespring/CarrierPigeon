@@ -72,6 +72,7 @@ int taskshred(FILE *output, char *listname, char *task) {
   }
 }
 
+#ifndef WEBSERVER
 int main(int argc, char **argv) {
   if (argc < 2) {
     puts("Invalid number of arguments.\nUsage: \n\"shred (listname)\" will "
@@ -87,3 +88,4 @@ int main(int argc, char **argv) {
     }
   }
 }
+#endif

@@ -11,6 +11,9 @@
 
 #define PORT 3666
 #define BUFFERSIZE 1024 // TEN-TWENTY FOURRRR
+
+extern int all_lists(FILE *);
+
 int main(int port) {
   // Create socket
   int sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -46,10 +49,6 @@ int main(int port) {
   printf("server listening for connections\n");
 
   char buffer[BUFFERSIZE];
-  char *resp = "HTTP/1.0 200 OK\r\n"
-               "Server: webserver-c\r\n"
-               "Content-type: text/html\r\n\r\n"
-               "<html>replace me</html>\r\n";
   FILE *filePointer;
 
   // Accept!
@@ -81,20 +80,25 @@ int main(int port) {
     char version[BUFFERSIZE];
     sscanf(buffer, "%s %s %s", method, uri, version);
 
+    // GET METHODS
     if (strcmp(method, "GET") == 0) {
+
+      // GET /index.html
       if (strcmp(uri, "/index.html") == 0) {
-        filePointer = fopen("../frontend/pages/index.html", "r");
+        filePointer = fopen("./frontend/pages/index.html", "r");
         if (filePointer == NULL) {
-          resp = "HTTP/1.0 404 NOT FOUND\r\n"
-                 "Server: webserver-c\r\n"
-                 "Content-type: text/html\r\n\r\n"
-                 "<html>error</html>\r\n";
+          perror("Failed to load index.html");
+          char *resp = "HTTP/1.0 404 NOT FOUND\r\n"
+                       "Server: webserver-c\r\n"
+                       "Content-type: text/html\r\n\r\n"
+                       "<html>error</html>\r\n";
 
           int valwrite = write(newsockfd, resp, strlen(resp));
           if (valwrite < 0) {
             perror("webserver write failed");
             break;
           }
+          continue;
         }
 
         char header[] = "HTTP/1.0 200 OK\r\n"
@@ -120,17 +124,87 @@ int main(int port) {
         fclose(filePointer);
         continue;
       } else if (strcmp(uri, "/lists") == 0) {
+        // GET /lists
+
+        FILE *temp = tmpfile();
+        if (temp == NULL) {
+          perror("Failed to create temporary file for lists");
+          char *resp = "HTTP/1.0 500 INTERNAL SERVER ERROR\r\n"
+                       "Server: webserver-c\r\n"
+                       "Content-type: application/json\r\n\r\n"
+                        "{\"error\": \"Temporary file unable to build\"}\r\n";
+                        
+          int valwrite = write(newsockfd, resp, strlen(resp));
+          if (valwrite < 0) {
+            perror("webserver write failed");
+          }
+          continue;
+        }
+
+        int res = all_lists(temp);
+        printf("lists returned: %d\n", res);
+        long file_pos = ftell(temp);
+        printf("File Pos: %ld\n",file_pos);
+        if (file_pos == 0){
+          printf("all_lists has 0 lists");
+        }
+
+        if (res != 0) {
+
+          perror("Failed to load all lists");
+          char *resp = "HTTP/1.0 404 NOT FOUND\r\n"
+                       "Server: webserver-c\r\n"
+                       "Content-type: application/json\r\n\r\n"
+                        "{\"error\": Lists not found\"}\r\n";
+          int valwrite = write(newsockfd, resp, strlen(resp));
+          if (valwrite < 0) {
+            perror("webserver write failed");
+            break;
+          }
+          continue;
+        }
+
+        rewind(temp);
+        char header[] = "HTTP/1.0 200 OK\r\n"
+                        "Server: webserver-c\r\n"
+                       "Content-type: application/json\r\n\r\n";
+
+        int valwrite = write(newsockfd, header, sizeof(header));
+        if (valwrite < 0) {
+          perror("webserver write failed");
+          break;
+        }
+        char file_buffer[1024];
+        size_t bytes_read;
+        while ((bytes_read = fread(file_buffer, 1, sizeof(file_buffer), temp)) >
+               0) {
+
+          int valwrite = write(newsockfd, file_buffer, bytes_read);
+          if (valwrite < 0) {
+            perror("webserver write failed");
+            break;
+          }
+        }
+        fclose(temp);
+        close(newsockfd);
+        continue;
+      } else {
+        char *resp = "HTTP/1.0 404 NOT FOUND\r\n"
+                     "Server: webserver-c\r\n"
+                     "Content-type: text/html\r\n\r\n"
+                     "<html>error</html>\r\n";
+        int valwrite = write(newsockfd, resp, strlen(resp));
+        if (valwrite < 0) {
+          perror("webserver write failed");
+          continue;
+        }
       }
-    }
 
-    // Write to the socket
-    int valwrite = write(newsockfd, resp, strlen(resp));
-    if (valwrite < 0) {
-      perror("webserver write failed");
-      continue;
-    }
+      // Write to the socket
 
-    close(newsockfd);
+      close(newsockfd);
+    }
   }
   return 0;
 }
+#endif

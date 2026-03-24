@@ -47,6 +47,7 @@ int appendTask(char *message, char *listname) {
   return 0;
 }
 
+#ifndef WEBSERVER
 int main(int argc, char **argv) {
   char *command = argv[2];
   if (argc < 3) {
@@ -63,3 +64,4 @@ int main(int argc, char **argv) {
 
   return 0;
 }
+#endif
