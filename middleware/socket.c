@@ -14,6 +14,7 @@
 
 #ifdef WEBSERVER
 extern int all_lists(FILE *);
+extern int appendTask(char *message, char *listname);
 
 int main(int port) {
   // Create socket
@@ -139,16 +140,11 @@ int main(int port) {
           if (valwrite < 0) {
             perror("webserver write failed");
           }
+          close(newsockfd);
           continue;
         }
 
         int res = all_lists(temp);
-        printf("lists returned: %d\n", res);
-        long file_pos = ftell(temp);
-        printf("File Pos: %ld\n", file_pos);
-        if (file_pos == 0) {
-          printf("all_lists has 0 lists");
-        }
 
         if (res != 0) {
 
@@ -226,6 +222,39 @@ int main(int port) {
       // Write to the socket
 
       close(newsockfd);
+    }
+
+    else if (strcmp(method, "POST") == 0) {
+
+      if (strcmp(uri, "/fly") == 0) {
+
+        char *body = NULL;
+
+        for (char *p = buffer; p < buffer + valread - 3; p++) {
+          if (p[0] == '\r' && p[1] == '\n' && p[2] == '\r' && p[3] == '\n') {
+            body = p + 4;
+            break;
+          }
+        }
+        if (body) {
+          char listname[256] = {0};
+          char task[256] = {0};
+          sscanf(body, "%[^~]~%s", listname, task);
+          appendTask(task, listname);
+          char resp[] = "HTTP/1.0 200 OK\r\n"
+                        "Server: webserver-c\r\n"
+                        "Content-type: text/plain\r\n\r\n"
+                        "OK\r\n";
+          write(newsockfd, resp, strlen(resp));
+        } else {
+          char resp[] = "HTTP/1.0 404 NOT FOUND\r\n"
+                        "Server: webserver-c\r\n"
+                        "Content-type: text/plain\r\n\r\n"
+                        "appendTask Failed\r\n";
+        }
+        close(newsockfd);
+        continue;
+      }
     }
   }
   return 0;

@@ -13,7 +13,6 @@
 #define LISTS_DIR "./lists/"
 #endif
 
-
 typedef struct date Date;
 typedef struct hour Hour;
 

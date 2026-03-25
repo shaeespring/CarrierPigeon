@@ -16,8 +16,8 @@ pigeonshred: mkdir backend/birdcage.o backend/pigeonshred.o
 	gcc $(FLAGS) -o backend/pigeonshred backend/obj/birdcage.o backend/obj/pigeonshred.o
 
 # Middleware 
-socket: mkdir middleware/socket.o backend/birdcage.o backend/pigeondrop_webserver.o
-	gcc $(FLAGS) -DWEBSERVER -o middleware/socket middleware/socket.o backend/obj/birdcage.o backend/obj/pigeondrop_webserver.o
+socket: mkdir middleware/socket.o backend/birdcage.o backend/pigeondrop_webserver.o backend/pigeonfly_webserver.o
+	gcc $(FLAGS) -DWEBSERVER -o middleware/socket middleware/socket.o backend/obj/birdcage.o backend/obj/pigeondrop_webserver.o backend/obj/pigeonfly_webserver.o
 
 all: pigeondrop pigeonfly pigeonshred socket
 
@@ -34,6 +34,9 @@ backend/pigeonshred.o: mkdir backend/src/pigeonshred.c
 # Special version for webserver 
 backend/pigeondrop_webserver.o: mkdir backend/src/pigeondrop.c
 	gcc $(FLAGS) -DWEBSERVER -c backend/src/pigeondrop.c -o backend/obj/pigeondrop_webserver.o
+
+backend/pigeonfly_webserver.o: mkdir backend/src/pigeonfly.c
+	gcc $(FLAGS) -DWEBSERVER -c backend/src/pigeonfly.c -o backend/obj/pigeonfly_webserver.o
 
 backend/birdcage.o: mkdir backend/src/birdcage.c $(HEADERS)
 	gcc $(FLAGS) -c backend/src/birdcage.c -o backend/obj/birdcage.o

@@ -1,81 +1,115 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-<title>Choose To Do List</title>
-<body>
-<div class="container">
-    <h1>To Do Lists</h1>
-    <button id="fetchBtn">Request folders from replaceme.c</button>
-    <div class="status" id="status">Ready</div>
-    <div class="folders" id="folders"></div>
-</div>
+  <title>Choose To Do List</title>
+  <body>
+    <div class="container">
+      <h1>To Do Lists</h1>
+      <button id="pigeondrop">Let Pigeons in the Window</button>
+      <div class="status" id="status">Ready</div>
+      <div class="folders" id="folders"></div>
+    </div>
+    <div id = "taskForm">
+        <form id="flyForm" onsubmit = "return false;">
+          <label for="lname">Listname</label>
+          <input type="text" id="lname" name="lname" value="Homework"></input>
+          <label for="tname">Task</label>
+          <input type="text" id="tname" name="tname" value="Calc 1"></input>
+          <button id="pigeonfly">Send pigeon</button>
+        </form>
+    </div>
 
-<script>
-    const foldersDiv = document.getElementById('folders');
-    const statusDiv = document.getElementById('status');
-    const fetchBtn = document.getElementById('fetchBtn');
+    <script>
+      const foldersDiv = document.getElementById("folders");
+      const statusDiv = document.getElementById("status");
+      const pigeondrop = document.getElementById("pigeondrop");
+      const pigeonfly = document.getElementById("pigeonfly")
 
-    // Show status
-    function setStatus(msg, isError = false) {
+      // Show status
+      function setStatus(msg, isError = false) {
         statusDiv.textContent = msg;
-    }
+      }
 
-    // clickable folders from array
-    function renderfolders(arr) {
-        foldersDiv.innerHTML = '';
-        
+      // clickable folders from array
+      function renderfolders(arr) {
+        foldersDiv.innerHTML = "";
+
         if (!arr || arr.length === 0) {
-            foldersDiv.innerHTML = '<div class="empty">Nothing to do!</div>';
-            return;
+          foldersDiv.innerHTML = '<div class="empty">Nothing to do!</div>';
+          return;
         }
-        
+
         for (let i = 0; i < arr.length; i++) {
-            const item = arr[i];
-            const folder = document.createElement('div');
-            folder.className = 'folder';
-            let displayText = typeof item === 'object' ? JSON.stringify(item) : String(item);
-            folder.textContent = displayText;
-            
-            // Click handler
-            folder.onclick = () => {
-                alert(`You clicked: ${JSON.stringify(item, null, 2)}`);
-                console.log('Clicked:', item, 'at index', i);
-                const path = encodeURIComponent(folderPath);
-                window.location.href-`list.html?folder=${path}`
-            };
-            
-            foldersDiv.appendChild(folder);
-        }
-    }
+          const item = arr[i];
+          const folder = document.createElement("div");
+          folder.className = "folder";
+          let displayText =
+            typeof item === "object" ? JSON.stringify(item) : String(item);
+          folder.textContent = displayText;
 
-    // Fetch the array from replaceme.c
-    async function fetchArray() {
+          // Click handler
+          folder.onclick = () => {
+            alert(`You clicked: ${JSON.stringify(item, null, 2)}`);
+            console.log("Clicked:", item, "at index", i);
+            const path = encodeURIComponent(folderPath);
+          };
+
+          foldersDiv.appendChild(folder);
+        }
+      }
+
+      // Pigeondrop
+      async function fetchArray() {
         try {
-            const response = await fetch('lists');
-            
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}`);
-            }
-            
-            const data = await response.json();
-            
-            if (!Array.isArray(data)) {
-                throw new Error('Response is not an array');
-            }
-            
-            renderfolders(data);
-            
+          const response = await fetch("lists");
+
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+          }
+
+          const data = await response.json();
+
+          if (!Array.isArray(data)) {
+            throw new Error("Response is not an array");
+          }
+
+          renderfolders(data);
         } catch (err) {
-            setStatus(`Error: ${err.message}`, true);
-            foldersDiv.innerHTML = `<div class="empty">Failed to load. Make sure replaceme.c returns a JSON array.</div>`;
+          setStatus(`Error: ${err.message}`, true);
+          foldersDiv.innerHTML = `<div class="empty">Pigeons are missing! Fill out an issue`;
         }
-    }
+      }
 
-    // Load on page start
-    fetchArray();
-    
-    // Refresh on button click
-    fetchBtn.onclick = fetchArray;
-</script>
-</body>
+      async function fetchTask() {
+        try {
+          const listname = document.getElementById("lname").value
+          const taskname = document.getElementById("tname").value
+          const delimiter = "~"
+          if (!listname || !taskname){
+            setStatus("Don't send your pigeons without a folder/task");
+            return;
+          }
+
+          const response = await fetch("fly", {
+            method: "POST",
+            headers: {"Content-Type": "text/plain"},
+            body: listname + delimiter + taskname
+          });
+          if (!response.ok) {
+            throw new Error`HTTP ${response.status}`();
+          }
+          alert("A pigeon has been sent");
+        } catch (err) {
+          setStatus(`Error: ${err.message}`, true);
+          foldersDiv.innerHTML = `<div class="empty">Pigeons aren't here :(`;
+        }
+      }
+
+      // Load on page start
+      fetchArray();
+
+      // Refresh on button click
+      pigeondrop.onclick = fetchArray;
+      pigeonfly.onclick = fetchTask;
+    </script>
+  </body>
 </html>
-

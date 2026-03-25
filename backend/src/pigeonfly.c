@@ -12,7 +12,7 @@ do list. Entering a valid message should prompt user to add an optional due date
 #include <string.h>
 #include <unistd.h>
 
-int appendTask(char *message, char *listname) {
+extern int appendTask(char *message, char *listname) {
   /*
    * pigeonfly (listname) -m (message)
    * FUNCTIONALITY:

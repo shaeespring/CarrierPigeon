@@ -70,6 +70,9 @@ int contains_list(char *filename) {
    * all_available.txt used in all three major command files
    */
   FILE *ptrlists = fopen(LISTS_AVAILABLE, "r");
+  if (!ptrlists){
+    return 0;
+  }
   int contains_list = 0; // listname is not in list
   char *s = read_line(ptrlists);
   while (strlen(s) > 1) {
