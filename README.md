@@ -12,14 +12,13 @@ Inspired by Trello and the line "Nothing to do!" after running sudo dnf upgrade 
 
 # CLI Setup
   DEV
-  1. in the top level folder, make all or make backend
+  1. in the top level folder, make all or cd into backend and run make all
   2. cd into backend
   3. Run commands such as pigeonfly <listname> -m <task>
 
 # Web-based Setup
 
 - in the top level folder, make all 
-- Only pigeondrop is implemented, so before you begin, cd into backend and run pigeonfly <listname> -m <task>
 - From the toplevel folder, run ./middleware/socket 
 - navigate to http://localhost:3666/index.html
 

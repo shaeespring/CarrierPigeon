@@ -271,7 +271,6 @@ int main(int port) {
 
         char *body = NULL;
 
-        printf("buffer: %s\n", buffer);
         for (char *p = buffer; p < buffer + valread - 3; p++) {
           if (p[0] == '\r' && p[1] == '\n' && p[2] == '\r' && p[3] == '\n') {
             body = p + 4;
@@ -290,7 +289,6 @@ int main(int port) {
           }
           char listname[256] = {0};
           sscanf(body, "%255[^\r\n]", listname);
-          printf("body: %s\n", body);
           printf("listname: %s\n", listname);
 
           pigeonshred(stdout, listname);
