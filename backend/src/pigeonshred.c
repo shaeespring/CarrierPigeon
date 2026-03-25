@@ -10,7 +10,7 @@
 #include "birdcage.h"
 #include <string.h>
 
-int pigeonshred(FILE *output, char *listname) {
+extern int pigeonshred(FILE *output, char *listname) {
   /*
    * pigeonshred (listname)
    * Functionality:

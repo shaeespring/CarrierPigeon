@@ -70,7 +70,9 @@ int contains_list(char *filename) {
    * all_available.txt used in all three major command files
    */
   FILE *ptrlists = fopen(LISTS_AVAILABLE, "r");
-  if (!ptrlists){
+
+  if (!ptrlists) {
+    perror("NULL file in contains_list");
     return 0;
   }
   int contains_list = 0; // listname is not in list
@@ -78,6 +80,7 @@ int contains_list(char *filename) {
   while (strlen(s) > 1) {
     if (!strcmp(s, filename)) {
       contains_list = 1; // listname is in list
+      printf("Is in all_available");
       break;
     }
     s = read_line(ptrlists);

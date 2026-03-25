@@ -40,20 +40,37 @@
 
         for (let i = 0; i < arr.length; i++) {
           const item = arr[i];
+          const container = document.createElement("div")
+          container.className = "list-container"
           const folder = document.createElement("div");
           folder.className = "folder";
-          let displayText =
-            typeof item === "object" ? JSON.stringify(item) : String(item);
-          folder.textContent = displayText;
+          let folderName;
+          if (typeof item === "object"){
+            folderName = "item.name" || JSON.stringify(item);
+          } else{
+            folderName = String(item);
+          }
+          folder.textContent = folderName
+          
+          const pigeonshred = document.createElement("button")
+          pigeonshred.textContent = "x"
+          pigeonshred.className = "pigeonshred"
+
+          pigeonshred.onclick = function(){
+            deleteList(folderName);
+          }
 
           // Click handler
           folder.onclick = () => {
             alert(`You clicked: ${JSON.stringify(item, null, 2)}`);
             console.log("Clicked:", item, "at index", i);
             const path = encodeURIComponent(folderPath);
+            
           };
+          container.appendChild(folder);
+          container.appendChild(pigeonshred);
 
-          foldersDiv.appendChild(folder);
+          foldersDiv.appendChild(container);
         }
       }
 
@@ -104,6 +121,25 @@
         }
       }
 
+      async function deleteList(listname){
+        if(confirm(`Delete list "${listname}?`)){
+          try{
+
+          const response = await fetch("shredlist", {
+            method: "DELETE",
+            headers: {"Content-Type": "text/plain"},
+            body: listname 
+          });
+              if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: Pigeon couldn't rip the list`);
+          }
+          await fetchArray();
+        } catch (err) {
+          setStatus(`Error: ${err.message}`, true);
+          foldersDiv.innerHTML = `<div class="empty">Pigeons couldn't rip the list `;
+        }
+          }
+        }
       // Load on page start
       fetchArray();
 

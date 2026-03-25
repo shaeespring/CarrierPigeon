@@ -15,6 +15,7 @@
 #ifdef WEBSERVER
 extern int all_lists(FILE *);
 extern int appendTask(char *message, char *listname);
+extern int pigeonshred(FILE *, char *);
 
 int main(int port) {
   // Create socket
@@ -236,11 +237,63 @@ int main(int port) {
             break;
           }
         }
+        // null terminate input
         if (body) {
+          char *end = memchr(body, '\r', valread - (body - buffer));
+          if (!end) {
+            end = memchr(body, '\n', valread - (body - buffer));
+          }
+          if (end) {
+            *end = '\0';
+          } else {
+            body[valread - (body - buffer)] = '\0';
+          }
           char listname[256] = {0};
           char task[256] = {0};
-          sscanf(body, "%[^~]~%s", listname, task);
+          sscanf(body, "%255[^~\r\n]~%255[^\r\n]", listname, task);
           appendTask(task, listname);
+          char resp[] = "HTTP/1.0 200 OK\r\n"
+                        "Server: webserver-c\r\n"
+                        "Content-type: text/plain\r\n\r\n"
+                        "OK\r\n";
+          write(newsockfd, resp, strlen(resp));
+        } else {
+          char resp[] = "HTTP/1.0 404 NOT FOUND\r\n"
+                        "Server: webserver-c\r\n"
+                        "Content-type: text/plain\r\n\r\n"
+                        "appendTask Failed\r\n";
+        }
+        close(newsockfd);
+        continue;
+      }
+    } else if (strcmp(method, "DELETE") == 0) {
+      if (strcmp(uri, "/shredlist") == 0) {
+
+        char *body = NULL;
+
+        printf("buffer: %s\n", buffer);
+        for (char *p = buffer; p < buffer + valread - 3; p++) {
+          if (p[0] == '\r' && p[1] == '\n' && p[2] == '\r' && p[3] == '\n') {
+            body = p + 4;
+            break;
+          }
+        }
+        if (body) {
+          char *end = memchr(body, '\r', valread - (body - buffer));
+          if (!end) {
+            end = memchr(body, '\n', valread - (body - buffer));
+          }
+          if (end) {
+            *end = '\0';
+          } else {
+            body[valread - (body - buffer)] = '\0';
+          }
+          char listname[256] = {0};
+          sscanf(body, "%255[^\r\n]", listname);
+          printf("body: %s\n", body);
+          printf("listname: %s\n", listname);
+
+          pigeonshred(stdout, listname);
           char resp[] = "HTTP/1.0 200 OK\r\n"
                         "Server: webserver-c\r\n"
                         "Content-type: text/plain\r\n\r\n"
@@ -259,4 +312,5 @@ int main(int port) {
   }
   return 0;
 }
+
 #endif
